@@ -5,8 +5,8 @@ import pandas as pd
 import re
 import time
 import logging
-import random  # Importado para el relleno de predicciones
-import warnings  # Para manejar advertencias
+import random
+import warnings
 from joblib import Parallel, delayed
 from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import SGDClassifier
@@ -157,15 +157,42 @@ def obtener_terminacion(numero):
 
 # Configuración de figuras y terminaciones
 figuras_dict = {
-    1: ['1'],
-    2: ['2', '11', '20', '29'],
-    3: ['3', '12', '21', '30'],
-    4: ['4', '13', '22', '31'],
-    5: ['5', '14', '23', '32'],
-    6: ['6', '15', '24', '33'],
-    7: ['7', '16', '25', '34'],
-    8: ['8', '17', '26', '35'],
-    9: ['9', '18', '27', '36']
+    '1': ['1'],
+    '2': ['2', '11', '20', '29'],
+    '3': ['3', '12', '21', '30'],
+    '4': ['4', '13', '22', '31'],
+    '5': ['5', '14', '23', '32'],
+    '6': ['6', '15', '24', '33'],
+    '7': ['7', '16', '25', '34'],
+    '8': ['8', '17', '26', '35'],
+    '9': ['9', '18', '27', '36'],
+    '10': ['10', '19', '28'],
+    '11': ['11', '2', '29'],    
+    '12': ['12', '3', '21'],
+    '13': ['13', '4', '22', '31'],
+    '14': ['14', '5', '23', '32'],
+    '15': ['15', '6', '24', '33'],
+    '16': ['16', '7', '25', '34'],
+    '17': ['17', '8', '26', '35'],
+    '18': ['18', '9', '27', '36'],
+    '19': ['19', '10', '28'],
+    '20': ['20', '2', '11', '29'],
+    '21': ['21', '3', '12',],
+    '22': ['22', '4', '13', '31'],
+    '23': ['23', '5', '14', '32'],
+    '24': ['24', '6', '15', '33'],
+    '25': ['25', '7', '16', '34'],
+    '26': ['26', '8', '17', '35'],
+    '27': ['27', '9', '18', '36'],
+    '28': ['28', '10', '19'],
+    '29': ['29', '2', '11', '20'],
+    '30': ['30', '3', '12'],
+    '31': ['31', '4', '13', '22'],
+    '32': ['32', '5', '14', '23'],
+    '33': ['33', '6', '15', '24'],
+    '34': ['34', '7', '16', '25'],
+    '35': ['35', '8', '17', '26'],
+    '36': ['36', '9', '18', '27'],
 }
 
 doble_figuras = { 
@@ -188,6 +215,303 @@ terminaciones = {
     '9': ['9', '19', '29']
 }
 
+pegados = { 
+    '0':['1','2'],
+    '00':['2','3'],
+    '1': ['0','4'],
+    '2': ['0','00','5'],
+    '3': ['00','6'],
+    '4': ['1','7'],
+    '5': ['2','8'],
+    '6': ['3','9'],
+    '7': ['4','10'],
+    '8': ['5','11'],
+    '9': ['6','12'],
+    '10': ['7','13'],
+    '11': ['8','14'],
+    '12': ['9','15'],
+    '13': ['10','16'],
+    '14': ['11','17'],
+    '15': ['12','18'],
+    '16': ['13','19'],
+    '17': ['14','20'],
+    '18': ['15','21'],
+    '19': ['16','22'],
+    '20': ['17','23'],
+    '21': ['18','24'],
+    '22': ['19','25'],
+    '23': ['20','26'],
+    '24': ['21','27'],
+    '25': ['22','28'],
+    '26': ['23','29'],
+    '27': ['24','30'],
+    '28': ['25','31'],
+    '29': ['26','32'],
+    '30': ['27','33'],
+    '31': ['28','34'],
+    '32': ['29','35'],
+    '33': ['30','36'],
+    '34': ['31'],
+    '35': ['32'],
+    '36': ['33'],
+}
+
+Puerta_Puerta = {
+    '00': ['27','1'],
+    '0':['28','2'],
+    '1':['00','13'],
+    '2':['0','14'],
+    '3':['24','15'],
+    '4':['23','16'],
+    '5':['22','17'],
+    '6':['21','18'],
+    '7':['20','11'],
+    '8':['19','12'],
+    '9':['26','28'],
+    '10':['25','27'],
+    '11':['7','30'],
+    '12':['8','29'],
+    '13':['1','36'],
+    '14':['2','35'],
+    '15':['3','34'],
+    '16':['4','33'],
+    '17':['5','32'],
+    '18':['6','31'],
+    '19':['31','8'],
+    '20':['32','7'],
+    '21':['33','6'],
+    '22':['34','5'],
+    '23':['35','4'],
+    '24':['36','3'],
+    '25':['29','10'],
+    '26':['30','9'],
+    '27':['10','00'],
+    '28':['9','0'],
+    '29':['12','25'],
+    '30':['11','26'],
+    '31':['18','19'],
+    '32':['17','20'],
+    '33':['16','21'],
+    '34':['15','22'],
+    '35':['14','23'],
+    '36':['13','24']
+                 
+}
+
+numeros_con_espejo = {
+    '0': ['00', '0', '6', '9', '12', '21', '13', '31', '16', '19', '23', '32', '26', '29'],
+    '00': ['0', '00', '6', '9', '12', '21', '13', '31', '16', '19', '23', '32', '26', '29'],
+    '6': ['9', '6', '0', '00', '12', '21', '13', '31', '16', '19', '23', '32', '26', '29'],
+    '9': ['6', '9', '0', '00', '12', '21', '13', '31', '16', '19', '23', '32', '26', '29'],
+    '12': ['21', '12', '0', '00', '6', '9', '13', '31', '16', '19', '23', '32', '26', '29'],
+    '21': ['12', '21', '0', '00', '6', '9', '13', '31', '16', '19', '23', '32', '26', '29'],
+    '13': ['31', '13', '0', '00', '6', '9', '12', '21', '16', '19', '23', '32', '26', '29'],
+    '31': ['13', '31', '0', '00', '6', '9', '12', '21', '16', '19', '23', '32', '26', '29'],
+    '16': ['19', '16', '0', '00', '6', '9', '12', '21', '13', '31', '23', '32', '26', '29'],
+    '19': ['16', '19', '0', '00', '6', '9', '12', '21', '13', '31', '23', '32', '26', '29'],
+    '23': ['32', '23', '0', '00', '6', '9', '12', '21', '13', '31', '16', '19', '26', '29'],
+    '32': ['23', '32', '0', '00', '6', '9', '12', '21', '13', '31', '16', '19', '26', '29'],
+    '26': ['29', '26', '0', '00', '6', '9', '12', '21', '13', '31', '16', '19', '23', '32'],
+    '29': ['26', '29', '0', '00', '6', '9', '12', '21', '13', '31', '16', '19', '23', '32']
+}
+
+arañita = {
+    '1':['1','3','5','7','9','14','19','21','23','25','27'],
+    '3':['1','3','5','7','9','14','19','21','23','25','27'],
+    '5':['1','3','5','7','9','14','19','21','23','25','27'],
+    '7':['1','3','5','7','9','14','19','21','23','25','27'],
+    '9':['1','3','5','7','9','14','19','21','23','25','27'],
+    '14':['1','3','5','7','9','14','19','21','23','25','27'],
+    '19':['1','3','5','7','9','14','19','21','23','25','27'],
+    '21':['1','3','5','7','9','14','19','21','23','25','27'],
+    '23':['1','3','5','7','9','14','19','21','23','25','27'],
+    '25':['1','3','5','7','9','14','19','21','23','25','27'],
+    '27':['1','3','5','7','9','14','19','21','23','25','27'],
+}
+
+rojo_con_rojo_izq = {
+    '12': ['21', '16', '19', '18', '17', '14', '25', '27'],
+    '14': ['23', '16', '21', '18', '19', '12', '25', '27'],
+    '16': ['25', '14', '21', '18', '19', '12', '23', '27'],
+    '18': ['27', '16', '21', '14', '19', '12', '23', '25'],
+    '19': ['12', '14', '16', '18', '21', '23', '25', '27'],
+    '21': ['14', '16', '18', '19', '12', '23', '25', '27'],
+    '23': ['16', '18', '19', '21', '12', '14', '25', '27'],
+    '25': ['18', '19', '21', '23', '12', '14', '16', '27'],
+    '27': ['19', '21', '23', '25', '12', '14', '16', '18']
+}
+
+Negro_con_negro_izq = {
+    '2' : ['35', '4', '33', '6', '31', '8', '29', '10'],
+    '4' : ['2', '35', '33', '6', '31', '8', '29', '10'],
+    '6' : ['4', '2', '35', '33', '31', '8', '29', '10'],
+    '8' : ['6', '4', '2', '35', '33', '31', '29', '10'],
+    '10': ['8', '6', '4', '2', '35', '33', '31', '29'],
+    '29': ['10', '8', '6', '4', '2', '35', '33', '31'],
+    '31': ['29', '10', '8', '6', '4', '2', '35', '33'],
+    '33': ['31', '29', '10', '8', '6', '4', '2', '35'],
+    '35': ['33', '31', '29', '10', '8', '6', '4', '2']
+}
+
+Rojo_con_rojo_der = {
+    '1' : ['36', '3', '34', '5', '32', '7', '30', '9'],
+    '3' : ['1', '36', '34', '5', '32', '7', '30', '9'],
+    '5' : ['1', '36', '3', '34', '32', '7', '30', '9'],
+    '7' : ['1', '36', '3', '34', '5', '32', '30', '9'],
+    '9' : ['1', '36', '3', '34', '5', '32', '7', '30'],
+    '30': ['1', '36', '3', '34', '5', '32', '7', '9'],
+    '32': ['1', '36', '3', '34', '5', '7', '30', '9'],
+    '34': ['1', '36', '3', '5', '32', '7', '30', '9'],
+    '36': ['1', '3', '5', '7', '9', '32', '34', '30']
+}
+
+Negro_con_negro_der = { 
+    '11' :['13', '24', '15', '22', '17', '20', '26', '28'],
+    '13' :['24', '15', '22', '17', '20', '11', '26', '28'],
+    '15' :['13', '24', '22', '17', '20', '11', '26', '28'],
+    '17' :['13', '24', '15', '22', '20', '11', '26', '28'],
+    '20' :['13', '24', '15', '22', '17', '11', '26', '28'],
+    '22' :['13', '24', '15', '17', '20', '11', '26', '28'],
+    '24' :['13', '15', '22', '17', '20', '11', '26', '28'],
+    '26' :['13', '24', '15', '22', '17', '20', '11', '28'],
+    '28' :['13', '24', '15', '22', '17', '20', '11', '26'],
+}
+
+pequeños_rojos = {
+    '1' :['3', '5', '7', '9'],
+    '3' :['1', '5', '7', '9'],
+    '5' :['1', '3', '7', '9'],
+    '7' :['1', '3', '5', '9'],
+    '9' :['1', '3', '5', '7']
+}
+
+pequeño_negros = {
+    '2' :['4', '6', '8', '10'],
+    '4' :['2', '6', '8', '10'],
+    '6' :['2', '4', '8', '10'],
+    '8' :['2', '4', '6', '10'],
+    '10':['2', '4', '6', '8']
+}
+
+veinte_rojos = {
+    '21' :['23', '25', '27'],
+    '23' :['21', '25', '27'],
+    '25' :['21', '23', '25'],
+    '27' :['21', '23', '25']
+}
+
+veinte_negros = {
+    '20' :['22', '24', '26', '28', '29'],
+    '22' :['20', '24', '26', '28', '29'],
+    '24' :['20', '22', '26', '28', '29'],
+    '26' :['20', '22', '24', '28', '29'],
+    '28' :['20', '22', '24', '26', '29'],
+    '29' :['20', '22', '24', '26', '28']                                                         
+}
+
+treinta_rojo = {
+    '30' : ['32', '34', '36'],
+    '32' : ['30', '34', '36'],
+    '34' : ['30', '32', '36'],
+    '36' : ['30', '32', '34']
+}
+
+treinta_negro = {
+    '31' :['33', '35'],
+    '33' :['31', '35'],
+    '35' :['31', '33']
+}
+
+docena_1 = { 
+    '1' :['2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
+    '2' :['1', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
+    '3' :['1', '2', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
+    '4' :['1', '2', '3', '5', '6', '7', '8', '9', '10', '11', '12'],
+    '5' :['1', '2', '3', '4', '6', '7', '8', '9', '10', '11', '12'],
+    '6' :['1', '2', '3', '4', '5', '7', '8', '9', '10', '11', '12'],
+    '7' :['1', '2', '3', '4', '5', '6', '8', '9', '10', '11', '12'],
+    '8' :['1', '2', '3', '4', '5', '6', '7', '9', '10', '11', '12'],
+    '9' :['1', '2', '3', '4', '5', '6', '7', '8', '10', '11', '12'],
+    '10' :['1', '2', '3', '4', '5', '6', '7', '8', '9', '11', '12'],
+    '11' :['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '12'],
+    '12' :['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11']
+}
+
+docena_2 = { 
+    '13' : ['14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24'],
+    '14' : ['13', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24'],
+    '15' : ['13', '14', '16', '17', '18', '19', '20', '21', '22', '23', '24'],
+    '16' : ['13', '14', '15', '17', '18', '19', '20', '21', '22', '23', '24'],
+    '17' : ['13', '14', '15', '16', '18', '19', '20', '21', '22', '23', '24'],
+    '18' : ['13', '14', '15', '16', '17', '19', '20', '21', '22', '23', '24'],
+    '19' : ['13', '14', '15', '16', '17', '18', '20', '21', '22', '23', '24'],
+    '20' : ['13', '14', '15', '16', '17', '18', '19', '21', '22', '23', '24'],
+    '21' : ['13', '14', '15', '16', '17', '18', '19', '20', '22', '23', '24'],
+    '22' : ['13', '14', '15', '16', '17', '18', '19', '20', '21', '23', '24'],
+    '23' : ['13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '24'],
+    '24' : ['13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23']
+}
+
+docena_3 = {
+    '25': ['26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36'],
+    '26': ['25', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36'],
+    '27': ['25', '26', '28', '29', '30', '31', '32', '33', '34', '35', '36'],
+    '28': ['25', '26', '27', '29', '30', '31', '32', '33', '34', '35', '36'],
+    '29': ['25', '26', '27', '28', '30', '31', '32', '33', '34', '35', '36'],
+    '30': ['25', '26', '27', '28', '29', '31', '32', '33', '34', '35', '36'],
+    '31': ['25', '26', '27', '28', '29', '30', '32', '33', '34', '35', '36'],
+    '32': ['25', '26', '27', '28', '29', '30', '31', '33', '34', '35', '36'],
+    '33': ['25', '26', '27', '28', '29', '30', '31', '32', '34', '35', '36'],
+    '34': ['25', '26', '27', '28', '29', '30', '31', '32', '33', '35', '36'],
+    '35': ['25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '36'],
+    '36': ['25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35']
+}
+
+columna_1 = {
+    '3': ['6', '9', '12', '15', '18', '21', '24', '27', '30', '33', '36'],
+    '6': ['3', '9', '12', '15', '18', '21', '24', '27', '30', '33', '36'],
+    '9': ['3', '6', '12', '15', '18', '21', '24', '27', '30', '33', '36'],
+    '12': ['3', '6', '9', '15', '18', '21', '24', '27', '30', '33', '36'],
+    '15': ['3', '6', '9', '12', '18', '21', '24', '27', '30', '33', '36'],
+    '18': ['3', '6', '9', '12', '15', '21', '24', '27', '30', '33', '36'],
+    '21': ['3', '6', '9', '12', '15', '18', '24', '27', '30', '33', '36'],
+    '24': ['3', '6', '9', '12', '15', '18', '21', '27', '30', '33', '36'],
+    '27': ['3', '6', '9', '12', '15', '18', '21', '24', '30', '33', '36'],
+    '30': ['3', '6', '9', '12', '15', '18', '21', '24', '27', '33', '36'],
+    '33': ['3', '6', '9', '12', '15', '18', '21', '24', '27', '30', '36'],
+    '36': ['3', '6', '9', '12', '15', '18', '21', '24', '27', '30', '33']
+}
+
+columna_2 ={
+    '2': ['5', '8', '11', '14', '17', '20', '23', '26', '29', '32', '35'],
+    '5': ['2', '8', '11', '14', '17', '20', '23', '26', '29', '32', '35'],
+    '8': ['2', '5', '11', '14', '17', '20', '23', '26', '29', '32', '35'],
+    '11':['2', '5', '8', '14', '17', '20', '23', '26', '29', '32', '35'],
+    '14':['2', '5', '8', '11', '17', '20', '23', '26', '29', '32', '35'],
+    '17':['2', '5', '8', '11', '14', '20', '23', '26', '29', '32', '35'],
+    '20':['2', '5', '8', '11', '14', '17', '23', '26', '29', '32', '35'],
+    '23':['2', '5', '8', '11', '14', '17', '20', '26', '29', '32', '35'],
+    '26':['2', '5', '8', '11', '14', '17', '20', '23', '29', '32', '35'],
+    '29':['2', '5', '8', '11', '14', '17', '20', '23', '26', '32', '35'],
+    '32':['2', '5', '8', '11', '14', '17', '20', '23', '26', '29', '35'],
+    '35':['2', '5', '8', '11', '14', '17', '20', '23', '26', '29', '32']
+}
+
+columna_3 = {
+    '1':['4', '7', '10', '13', '16', '19', '22', '25', '28', '31', '34'],
+    '4':['1', '7', '10', '13', '16', '19', '22', '25', '28', '31', '34'],
+    '7':['1', '4', '10', '13', '16', '19', '22', '25', '28', '31', '34'],
+    '10':['1', '4', '7', '13', '16', '19', '22', '25', '28', '31', '34'],
+    '13':['1', '4', '7', '10', '16', '19', '22', '25', '28', '31', '34'],
+    '16':['1', '4', '7', '10', '13', '19', '22', '25', '28', '31', '34'],
+    '19':['1', '4', '7', '10', '13', '16', '22', '25', '28', '31', '34'],
+    '22':['1', '4', '7', '10', '13', '16', '19', '25', '28', '31', '34'],
+    '25':['1', '4', '7', '10', '13', '16', '19', '22', '28', '31', '34'],
+    '28':['1', '4', '7', '10', '13', '16', '19', '22', '25', '31', '34'],
+    '31':['1', '4', '7', '10', '13', '16', '19', '22', '25', '28', '34'],
+    '34':['1', '4', '7', '10', '13', '16', '19', '22', '25', '28', '31']
+}
+
 def obtener_espejo(n):
     espejo_map = {
         '0': '00',
@@ -200,6 +524,14 @@ def obtener_espejo(n):
         '26': '29', '29': '26'  
     }
     return espejo_map.get(n, None)
+
+# Lista completa de patrones para usar en predicciones
+TODOS_PATRONES = [
+    Puerta_Puerta, arañita, rojo_con_rojo_izq, Negro_con_negro_izq, 
+    Rojo_con_rojo_der, Negro_con_negro_der, pequeños_rojos, pequeño_negros,
+    veinte_rojos, veinte_negros, treinta_rojo, treinta_negro, docena_1, 
+    docena_2, docena_3, columna_1, columna_2, columna_3, numeros_con_espejo
+]
 
 @st.cache_data(show_spinner=False, max_entries=3)
 def aplicar_patrones_experiencia(jugadas):
@@ -218,8 +550,11 @@ def aplicar_patrones_experiencia(jugadas):
         if jugadas[i] == jugadas[i+3] and jugadas[i+1] != jugadas[i+2]:
             patrones_detectados.append(("Figura de cierre", ', '.join(jugadas[i:i+4])))
     
-    # Patrones de sumas
+    # Patrones de sumas (evitando 0 y 00)
     for i in range(len(jugadas)-2):
+        if jugadas[i] in ['0', '00'] or jugadas[i+1] in ['0', '00']:
+            continue  # Saltar números no sumables
+            
         try:
             n1 = int(jugadas[i])
             n2 = int(jugadas[i+1])
@@ -437,7 +772,9 @@ def entrenar_modelo(jugadas):
 
 def actualizar_modelo_parcial(X_new, y_new):
     """Actualiza el modelo con nuevos datos en batch"""
-    if st.session_state.modelo is None:
+    if (st.session_state.modelo is None or 
+        st.session_state.scaler is None or 
+        st.session_state.pca is None):
         return
     
     BATCH_SIZE = 10
@@ -476,13 +813,14 @@ def actualizar_modelo_parcial(X_new, y_new):
             st.error(f"Error en actualización parcial: {str(e)}")
 
 def predecir_numeros():
+    # Solo usar jugadas manuales del usuario
     if not st.session_state.jugadas_usuario or len(st.session_state.jugadas_usuario) < 10:
         return [], [], []
     
     if st.session_state.modelo is None or st.session_state.onnx_session is None:
         return [], [], []
 
-    # Preparar datos para predicción
+    # Preparar datos para predicción (últimas 10 jugadas MANUALES)
     ultimas_jugadas = st.session_state.jugadas_usuario[-10:]
     X = extraer_caracteristicas(ultimas_jugadas)
     
@@ -513,17 +851,26 @@ def predecir_numeros():
                 if isinstance(elem, str) and elem in ruleta_americana:
                     sugeridos_extras.add(elem)
         
-        # Añadir números relacionados
+        # Añadir números relacionados (vecinos, terminaciones, patrones)
         for n in top_18:
+            # Vecinos
             vecinos = obtener_vecinos(n, radius=1)
             for v in vecinos:
                 if v in ruleta_americana:
                     sugeridos_extras.add(v)
             
+            # Terminaciones
             term = obtener_terminacion(n)
             if term in terminaciones:
                 for t in terminaciones[term]:
                     sugeridos_extras.add(t)
+            
+            # Todos los patrones adicionales
+            for pat_dict in TODOS_PATRONES:
+                if n in pat_dict:
+                    for num_pat in pat_dict[n]:
+                        if num_pat in ruleta_americana:
+                            sugeridos_extras.add(num_pat)
         
         # Añadir sugerencias extras
         for n in sugeridos_extras:
@@ -598,15 +945,41 @@ def cargar_jugadas_desde_texto(texto):
     jugadas_match = re.findall(r'\b(00|0|[1-9]|[1-2][0-9]|3[0-6])\b', texto)
     return [j for j in jugadas_match if j in ruleta_americana]
 
+def actualizar_texto_jugadas(nueva_jugada):
+    """Actualiza el área de texto con la nueva jugada al inicio"""
+    current_text = st.session_state.jugadas_texto_data
+    if current_text:
+        jugadas_lista = [j.strip() for j in current_text.split(',') if j.strip()]
+    else:
+        jugadas_lista = []
+    
+    # Insertar nueva jugada al principio
+    jugadas_lista.insert(0, nueva_jugada)
+    
+    # Limitar a 500 jugadas
+    if len(jugadas_lista) > 500:
+        jugadas_lista = jugadas_lista[:500]
+    
+    st.session_state.jugadas_texto_data = ', '.join(jugadas_lista)
+
+def agregar_jugada_manual(nueva_jugada):
+    """Agrega una jugada manteniendo el límite de 500"""
+    if len(st.session_state.jugadas_usuario) < 500:
+        st.session_state.jugadas_usuario.append(nueva_jugada)
+    else:
+        # Mantener solo las últimas 500 jugadas
+        st.session_state.jugadas_usuario = st.session_state.jugadas_usuario[1:] + [nueva_jugada]
+
 def inicializar_session_state():
     keys = [
-        'jugadas_usuario', 'modelo', 'fase_inicial', 'estadisticas_usuario',
+        'base_historica', 'jugadas_usuario', 'modelo', 'fase_inicial', 'estadisticas_usuario',
         'performance_metrics', 'prediction_history', 'pca', 'scaler',
         'onnx_session', 'modelo_actualizado', 'X_batch', 'y_batch', 'onnx_bytes',
-        'jugadas_texto'  # AÑADE ESTA LÍNEA
+        'jugadas_texto_data'
     ]
     
     defaults = {
+        'base_historica': [],
         'jugadas_usuario': [],
         'modelo': None,
         'fase_inicial': True,
@@ -620,7 +993,7 @@ def inicializar_session_state():
         'X_batch': [],
         'y_batch': [],
         'onnx_bytes': None,
-        'jugadas_texto': ""  # AÑADE ESTA LÍNEA (valor inicial vacío)
+        'jugadas_texto_data': ""  # Almacena el texto interno
     }
     
     for key in keys:
@@ -638,36 +1011,35 @@ if not st.session_state.fase_inicial and st.session_state.modelo is None:
 # ========== INTERFAZ PRINCIPAL ==========
 st.title("🎯 Ruleta Americana: Sistema de Predicción Avanzado")
 
+# Callback para sincronizar el widget con los datos internos
+def update_jugadas_texto():
+    st.session_state.jugadas_texto_data = st.session_state.jugadas_texto_widget
+
 # ✅ 1. Opción para ingresar jugadas iniciales
 with st.expander("📥 Ingresar primeras 104 jugadas manualmente"):
+    # Widget con clave dedicada y callback
     jugadas_texto = st.text_area(
         "Pega aquí tus jugadas separadas por coma o espacio (mínimo 104 números):",
         placeholder="Ej: 17, 4, 26, 8, 32, 0, 36, ...",
-        key="jugadas_texto"
+        value=st.session_state.jugadas_texto_data,
+        key='jugadas_texto_widget',
+        on_change=update_jugadas_texto
     )
+    
     if st.button("Cargar jugadas manuales"):
         try:
-            jugadas_validas = cargar_jugadas_desde_texto(jugadas_texto)
+            # Usar el valor interno (jugadas_texto_data) en lugar del widget
+            jugadas_validas = cargar_jugadas_desde_texto(st.session_state.jugadas_texto_data)
             
             if len(jugadas_validas) >= 104:
-                st.session_state.jugadas_usuario = jugadas_validas[-412:]
+                # Agregar jugadas manteniendo límite de 500
+                for jugada in jugadas_validas:
+                    agregar_jugada_manual(jugada)
                 
-                for jugada in st.session_state.jugadas_usuario:
-                    actualizar_estadisticas_usuario(jugada)
+                # Actualizar estadísticas
+                st.session_state.estadisticas_usuario = calcular_estadisticas(st.session_state.jugadas_usuario)
                 
-                if len(st.session_state.jugadas_usuario) >= 10:
-                    with st.spinner("Entrenando modelo inicial..."):
-                        model, pca, scaler, onnx_session, onnx_bytes = entrenar_modelo(st.session_state.jugadas_usuario)
-                        st.session_state.modelo = model
-                        st.session_state.pca = pca
-                        st.session_state.scaler = scaler
-                        st.session_state.onnx_session = onnx_session
-                        st.session_state.onnx_bytes = onnx_bytes
-                    
-                    st.session_state.fase_inicial = False
-                    st.success(f"✅ {len(jugadas_validas)} jugadas cargadas y modelo entrenado.")
-                else:
-                    st.success(f"✅ {len(jugadas_validas)} jugadas cargadas.")
+                st.success(f"✅ {len(jugadas_validas)} jugadas cargadas")
             else:
                 st.warning(f"Debes ingresar al menos 104 jugadas válidas. Encontradas: {len(jugadas_validas)}")
         except Exception as e:
@@ -676,32 +1048,44 @@ with st.expander("📥 Ingresar primeras 104 jugadas manualmente"):
 # ---------- Flujo principal ----------
 # Carga inicial de datos históricos
 if st.session_state.fase_inicial:
-    # Datos históricos
+    # Datos históricos ampliados (926 jugadas)
     historico = [
-        '23', '00', '8', '2', '27', '24', '34', '5', '20', '18', '8', '10', '6', '2', '0', '25', '22', '20', '23', '6', '22', '23', '8', '2', '21', '25', '10', '2', '17', '18', '4', '00', '16', '0', '32', '5', '22', '28', '3', '24', '36', '3', '34', '5', '31', '30', '31', '6', '5', '36', '0', '29', '19', '24', '28', '24', '20', '3', '35', '33', '32', '31', '17', '17', '4', '5', '14', '35', '13', '12', '2', '24', '25', '6', '16', '24', '36', '18', '15', '12', '00', '00', '23', '30', '11', '7', '11', '00', '27', '32', '30', '4', '2', '19', '24', '7', '24', '18', '27', '31', '28', '32', '8', '33', '00',
-        '23', '36', '10', '24', '2', '35', '8', '18', '17', '34', '33', '5', '21', '8', '00', '5', '25', '25', '18', '25', '33', '9', '28', '25', '7', '32', '28', '10', '1', '5', '26', '29', '34', '8', '25', '3', '1', '27', '6', '15', '18', '20', '35', '24', '35', '4', '7', '32', '0', '16', '00', '33', '26', '1', '2', '2', '15', '21', '19', '25', '11', '28', '21', '11', '1', '33', '20', '2', '32', '16', '24', '10', '28', '18', '23', '5', '23', '16', '28', '7', '13', '18', '34', '4', '19', '7', '22', '30', '21', '32', '32', '16', '25', '15', '31', '21', '10', '26', '1', '25', '24', '6', '00', '13',
+        # 15/07/2025 (129 jugadas)
         '26', '9', '4', '11', '24', '0', '20', '22', '13', '00', '30', '5', '21', '27', '7', '19', '12', '26', '9', '18', '29', '0', '8', '3', '1', '33', '28', '19', '30', '16', '14', '32', '4', '8', '1', '1', '17', '21', '5', '26', '23', '24', '30', '1', '31', '17', '22', '14', '15', '10', '00', '36', '36', '24', '25', '24', '10', '27', '9', '12', '29', '3', '29', '11', '32', '29', '6', '8', '21', '5', '22', '2', '8', '28', '00', '9', '30', '25', '00', '12', '36', '7', '35', '29', '24', '26', '14', '16', '0', '19', '22', '2', '22', '31', '22', '1', '10', '27', '27', '17', '34', '35', '19', '12', '3', '7', '7', '18', '20', '00', '29', '31', '5', '16', '29', '19', '0', '16', '17', '17', '13', '13', '33', '20', '16', '15', '21', '25', '8',
-        '25', '28', '33', '8', '27', '13', '0', '26', '12', '18', '23', '27', '20', '29', '17', '23', '21', '27', '32', '25', '24', '19', '35', '33', '12', '15', '19', '25', '11', '15', '7', '24', '31', '31', '36', '29', '1', '36', '28', '6', '31', '20', '8', '0', '26', '4', '18', '13', '16', '16', '13', '16', '23', '2', '21', '31', '12', '5', '21', '0', '35', '2', '24', '29', '21', '18', '28', '6', '18', '33', '35', '4', '35', '20', '26', '19', '27', '8', '15', '36', '8', '31', '13', '22', '33', '21', '28', '35', '21', '7', '14', '1', '24', '18', '25', '12', '36', '28', '0', '18', '0', '00', '4', '9', '6', '19', '4', '32', '28', '15', '8', '28', '9', '27', '34', '20', '12', '14', '14', '4', '36', '28', '25', '31', '28', '14', '8', '16', '13', '14', '24', '7', '00', '26', '24', '1', '25', '6', '10', '20', '2', '24', '17', '11', '33', '20', '14', '2', '26', '17', '2', '11', '30', '25', '32', '4', '18', '3', '14', '14', '15', '4', '31', '31', '28', '22', '36', '8', '19', '00', '32', '12', '3', '11', '33', '26', '14', '29', '25', '24', '31', '0', '36', '10', '27', '31', '30', '15', '29', '10', '8', '5', '1', '11', '34', '35', '0', '27', '14', '17', '3', '00', '36'
+        
+        # 14/07/2025 (204 jugadas)
+        '25', '28', '33', '8', '27', '13', '0', '26', '12', '18', '23', '27', '20', '29', '17', '23', '21', '27', '32', '25', '24', '19', '35', '33', '12', '15', '19', '25', '11', '15', '7', '24', '31', '31', '36', '29', '1', '36', '28', '6', '31', '20', '8', '0', '26', '4', '18', '13', '16', '16', '13', '16', '23', '2', '21', '31', '12', '5', '21', '0', '35', '2', '24', '29', '21', '18', '28', '6', '18', '33', '35', '4', '35', '20', '26', '19', '27', '8', '15', '36', '8', '31', '13', '22', '33', '21', '28', '35', '21', '7', '14', '1', '24', '18', '25', '12', '36', '28', '0', '18', '0', '00', '4', '9', '6', '19', '4', '32', '28', '15', '8', '28', '9', '27', '34', '20', '12', '14', '14', '4', '36', '28', '25', '31', '28', '14', '8', '16', '13', '14', '24', '7', '00', '26', '24', '1', '25', '6', '10', '20', '2', '24', '17', '11', '33', '20', '14', '2', '26', '17', '2', '11', '30', '25', '32', '4', '18', '3', '14', '14', '15', '4', '31', '31', '28', '22', '36', '8', '19', '00', '32', '12', '3', '11', '33', '26', '14', '29', '25', '24', '31', '0', '36', '10', '27', '31', '30', '15', '29', '10', '8', '5', '1', '11', '34', '35', '0', '27', '14', '17', '3', '00', '36',
+        
+        # 17/07/2025 (104 jugadas)
+        '23', '36', '10', '24', '2', '35', '8', '18', '17', '34', '33', '5', '21', '8', '00', '5', '25', '25', '18', '25', '33', '9', '28', '25', '7', '32', '28', '10', '1', '5', '26', '29', '34', '8', '25', '3', '1', '27', '6', '15', '18', '20', '35', '24', '35', '4', '7', '32', '0', '16', '00', '33', '26', '1', '2', '2', '15', '21', '19', '25', '11', '28', '21', '11', '1', '33', '20', '2', '32', '16', '24', '10', '28', '18', '23', '5', '23', '16', '28', '7', '13', '18', '34', '4', '19', '7', '22', '30', '21', '32', '32', '16', '25', '15', '31', '21', '10', '26', '1', '25', '24', '6', '00', '13',
+        
+        # 22/07/2025 (105 jugadas)
+        '23', '00', '8', '2', '27', '24', '34', '5', '20', '18', '8', '10', '6', '2', '0', '25', '22', '20', '23', '6', '22', '23', '8', '2', '21', '25', '10', '2', '17', '18', '4', '00', '16', '0', '32', '5', '22', '28', '3', '24', '36', '3', '34', '5', '31', '30', '31', '6', '5', '36', '0', '29', '19', '24', '28', '24', '20', '3', '35', '33', '32', '31', '17', '17', '4', '5', '14', '35', '13', '12', '2', '24', '25', '6', '16', '24', '36', '18', '15', '12', '00', '00', '23', '30', '11', '7', '11', '00', '27', '32', '30', '4', '2', '19', '24', '7', '24', '18', '27', '31', '28', '32', '8', '33', '00',
+        
+        # 26/07/2025 (156 jugadas)
+        '24', '19', '23', '14', '24', '31', '22', '14', '4', '6', '11', '35', '2', '12', '17', '33', '29', '3', '24', '8', '13', '31', '22', '2', '21', '13', '9', '00', '10', '7', '34', '1', '23', '5', '16', '5', '24', '20', '33', '34', '5', '25', '26', '26', '29', '26', '26', '13', '23', '27', '5', '14', '5', '17', '2', '17', '8', '24', '10', '0', '13', '29', '19', '9', '29', '20', '36', '33', '30', '2', '8', '4', '22', '6', '35', '7', '00', '26', '26', '17', '23', '28', '33', '32', '5', '21', '19', '35', '27', '1', '11', '0', '0', '13', '12', '13', '30', '23', '7', '34', '20', '16', '3', '33', '14', '00', '14', '29', '1', '20', '6', '28', '36', '8', '28', '35', '6', '18', '27', '21', '4', '3', '14', '3', '36', '26', '9', '1', '29', '35', '26', '27', '30', '27', '33', '31', '11', '27', '19', '00', '2', '5', '00', '32', '3', '28', '12', '33', '12', '33', '26', '34', '1', '20', '6', '19',
+        
+        # 27/07/2025 (228 jugadas)
+        '15', '7', '4', '21', '9', '7', '0', '5', '34', '10', '19', '31', '9', '4', '22', '28', '14', '13', '36', '5', '3', '28', '8', '22', '28', '0', '26', '35', '21', '5', '32', '21', '26', '8', '27', '3', '31', '16', '36', '36', '14', '23', '28', '14', '19', '13', '20', '33', '2', '26', '9', '31', '25', '5', '22', '8', '15', '3', '25', '00', '2', '00', '12', '1', '12', '5', '3', '9', '1', '21', '17', '24', '29', '6', '0', '8', '16', '21', '19', '2', '21', '17', '13', '15', '29', '13', '34', '00', '23', '23', '16', '20', '14', '1', '8', '18', '2', '14', '14', '35', '8', '8', '20', '30', '29', '6', '22', '34', '5', '8', '19', '10', '19', '00', '1', '36', '33', '35', '16', '20', '14', '36', '1', '10', '17', '25', '12', '8', '33', '17', '00', '1', '30', '33', '7', '29', '00', '24', '19', '11', '14', '32', '14', '5', '11', '23', '0', '18', '29', '0', '31', '15', '10', '19', '7', '2', '30', '6', '35', '20', '6', '8', '32', '7', '23', '24', '26', '31', '9', '30', '25', '32', '5', '32', '4', '26', '27', '15', '12', '30', '20', '12', '26', '2', '3', '18', '16', '28', '16', '14', '23', '28', '4', '13', '10', '10', '3', '15', '32', '9', '24', '32', '33', '11', '10', '28', '4', '17', '31', '24', '7', '33', '10', '28', '7', '31', '29', '29', '36', '00', '36', '33', '1', '6', '20', '00', '26', '20'
     ]
     
-    st.session_state.jugadas_usuario = historico
-    st.success(f"✅ 412 jugadas históricas cargadas")
+    # Guardar datos históricos en estado de sesión
+    st.session_state.base_historica = historico
     
-    # Inicializar estadísticas
-    for jugada in st.session_state.jugadas_usuario:
-        actualizar_estadisticas_usuario(jugada)
-    
-    # Entrenar modelo inicial
-    if len(st.session_state.jugadas_usuario) >= 10:
-        with st.spinner("Entrenando modelo inicial..."):
-            model, pca, scaler, onnx_session, onnx_bytes = entrenar_modelo(st.session_state.jugadas_usuario)
-            st.session_state.modelo = model
-            st.session_state.pca = pca
-            st.session_state.scaler = scaler
-            st.session_state.onnx_session = onnx_session
-            st.session_state.onnx_bytes = onnx_bytes
-        st.session_state.fase_inicial = False
-        st.success("✅ Modelo entrenado y optimizado")
+    # Entrenar modelo con datos históricos
+    if len(st.session_state.base_historica) >= 10 and st.session_state.modelo is None:
+        with st.spinner("Entrenando modelo con datos históricos..."):
+            model, pca, scaler, onnx_session, onnx_bytes = entrenar_modelo(st.session_state.base_historica)
+            if model is not None:
+                st.session_state.modelo = model
+                st.session_state.pca = pca
+                st.session_state.scaler = scaler
+                st.session_state.onnx_session = onnx_session
+                st.session_state.onnx_bytes = onnx_bytes
+                st.session_state.fase_inicial = False
+                st.success("✅ Modelo entrenado con 900+ jugadas históricas")
+            else:
+                st.error("Error al entrenar el modelo. Verifique los datos.")
 
 # Interfaz de usuario
 if st.session_state.fase_inicial:
@@ -716,26 +1100,27 @@ if st.session_state.fase_inicial:
             if not jugadas_validas:
                 st.warning("No se detectaron jugadas válidas")
             else:
-                st.session_state.jugadas_usuario = jugadas_validas
-                
-                if len(jugadas_validas) < 100:
-                    st.warning(f"⚠️ Se recomiendan 104 jugadas. Cargadas: {len(jugadas_validas)}")
+                # Agregar jugadas manteniendo límite de 500
+                for jugada in jugadas_validas:
+                    agregar_jugada_manual(jugada)
                 
                 # Inicializar estadísticas
-                for jugada in st.session_state.jugadas_usuario:
-                    actualizar_estadisticas_usuario(jugada)
+                st.session_state.estadisticas_usuario = calcular_estadisticas(st.session_state.jugadas_usuario)
                 
-                # Entrenar modelo
+                # Entrenar modelo si hay suficientes jugadas
                 if len(st.session_state.jugadas_usuario) >= 10:
                     with st.spinner("Entrenando modelo inicial..."):
                         model, pca, scaler, onnx_session, onnx_bytes = entrenar_modelo(st.session_state.jugadas_usuario)
-                        st.session_state.modelo = model
-                        st.session_state.pca = pca
-                        st.session_state.scaler = scaler
-                        st.session_state.onnx_session = onnx_session
-                        st.session_state.onnx_bytes = onnx_bytes
-                    st.session_state.fase_inicial = False
-                    st.success(f"✅ {len(jugadas_validas)} jugadas actuales cargadas. Modelo entrenado.")
+                        if model is not None:
+                            st.session_state.modelo = model
+                            st.session_state.pca = pca
+                            st.session_state.scaler = scaler
+                            st.session_state.onnx_session = onnx_session
+                            st.session_state.onnx_bytes = onnx_bytes
+                            st.session_state.fase_inicial = False
+                            st.success(f"✅ {len(jugadas_validas)} jugadas actuales cargadas. Modelo entrenado.")
+                        else:
+                            st.error("Error al entrenar el modelo. Verifique los datos.")
         except Exception as e:
             st.error(f"Error al cargar jugadas: {e}")
 
@@ -749,17 +1134,16 @@ else:
         st.write("")
         st.write("")
         if st.button("Agregar jugada", key="add_btn", use_container_width=True):
-            st.session_state.jugadas_usuario.append(nueva_jugada)
+            # Agregar manteniendo límite de 500
+            agregar_jugada_manual(nueva_jugada)
+            
+            # Actualizar estadísticas
             actualizar_estadisticas_usuario(nueva_jugada)
+        
             st.success(f"✅ {nueva_jugada} agregado a la historia")
             
-            # Sincronizar con área de texto
-            if 'jugadas_texto' in st.session_state:
-                current_text = st.session_state.jugadas_texto
-                new_text = current_text + " " + nueva_jugada if current_text else nueva_jugada
-                st.session_state.jugadas_texto = new_text
-            else:
-                st.session_state.jugadas_texto = nueva_jugada
+            # Actualizar el área de texto con la nueva jugada
+            actualizar_texto_jugadas(nueva_jugada)
             
             # Actualizar modelo con nuevo dato
             if len(st.session_state.jugadas_usuario) >= 11:
@@ -828,11 +1212,12 @@ else:
                 jugadas_validas = cargar_jugadas_desde_texto(mas_jugadas_input)
                 
                 if jugadas_validas:
-                    st.session_state.jugadas_usuario.extend(jugadas_validas)
+                    # Agregar manteniendo límite de 500
+                    for jugada in jugadas_validas:
+                        agregar_jugada_manual(jugada)
                     
                     # Actualizar estadísticas
-                    for jugada in jugadas_validas:
-                        actualizar_estadisticas_usuario(jugada)
+                    st.session_state.estadisticas_usuario = calcular_estadisticas(st.session_state.jugadas_usuario)
                     
                     # Actualizar modelo con nuevos datos
                     if len(st.session_state.jugadas_usuario) >= 11:
@@ -857,6 +1242,7 @@ if st.sidebar.button("🔁 Reiniciar Todo", key="reset_btn", use_container_width
     # Reiniciar estado inicial
     inicializar_session_state()
     st.session_state.fase_inicial = True
+    st.session_state.estadisticas_usuario = inicializar_estadisticas()
     st.success("✅ Sistema reiniciado correctamente")
 
 # Información adicional
