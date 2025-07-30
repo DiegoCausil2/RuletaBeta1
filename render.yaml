@@ -1,0 +1,8 @@
+# render.yaml
+services:
+  - type: web
+    name: ruletabeta1
+    env: python
+    buildCommand: ""
+    startCommand: streamlit run ruletabeta1.py --server.port 10000 --server.address 0.0.0.0
+    plan: free
